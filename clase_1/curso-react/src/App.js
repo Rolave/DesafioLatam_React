@@ -8,7 +8,7 @@ class App extends Component {
 			<div className="App">
 				<div className="App-header">
 					<img src={logo} className="App-logo" alt="logo" />
-					<h2>Formulario de contacto, creo.</h2>
+					<h2>Formulario de contacto, creo</h2>
 				</div>
 				<Formulario />
 			</div>
@@ -24,11 +24,15 @@ class Formulario extends Component{
 			lastNameRequired: false,
 			loading: false,
 			name: '',
+			preferences: [],
 			nameRequired: false,
 			required: false,
-			selectedOption: 'hombre',
-			isChecked: false,
+			selectedOption: 'Hombre',
 			isCheckedRequired: false,
+			checkboxMusValue: false,
+			checkboxTecValue: false,
+			checkboxViaValue: false,
+			checkboxGasValue: false,
 			successMessage: false,
 		}
 	}
@@ -39,12 +43,12 @@ class Formulario extends Component{
 	}
 	updateNombre(e){
 		this.setState({
-			name: e.target.value,
+			name: e.target.value.substr(0, 20)
 		})
 	}
 	updateApellido(e){
 		this.setState({
-			lastName: e.target.value,
+			lastName: e.target.value.substr(0, 20)
 		})
 	}
 	selectRadio(e){
@@ -53,16 +57,24 @@ class Formulario extends Component{
 		})
 	}
 	updateCheckBox(e){
+		const target = e.target
+		const checkValue = target.type === 'checkbox' ? target.checked : target.value
+		const checkName = target.name
+		const prefArray = this.state.preferences
+		const delArrayEl = prefArray.indexOf(checkName)
 		this.setState({
-			isChecked: e.target.checked
+			[checkName]: checkValue
 		})
+		target.checked ? prefArray.push(checkName) : prefArray.splice(checkName, 1)
+		console.log(prefArray)
 	}
 	formValidation(){
 		this.setState({
 			nameRequired: this.state.name === '' ? true : false,
 			lastNameRequired: this.state.lastName === '' ? true : false,
-			isCheckedRequired: this.state.isChecked === false ? true : false,
+			isCheckedRequired: this.state.preferences.length !== 0 ? false : true,
 		})
+		console.log(this.state.preferences)
 	}
 	toggleLoading(){
 		this.setState({
@@ -73,7 +85,7 @@ class Formulario extends Component{
 	onFormSubmit(e){
 		e.preventDefault()
 		this.formValidation();
-		if(this.state.name === '' || this.state.lastName === '' || this.state.isChecked === false){
+		if(this.state.name === '' || this.state.lastName === '' || this.state.isCheckedRequired === true){
 			return;
 		}
 		this.toggleLoading()
@@ -89,26 +101,26 @@ class Formulario extends Component{
 			<div className="container">
 				<div className="col-md-4 col-md-offset-4">
 					<form onSubmit={(e) => this.onFormSubmit(e)}>
-						<input id="name" placeholder="Nombre" onChange={(e) => this.updateNombre(e)} type="text" />
+						<input id="name" placeholder="Nombre" value={this.state.name} onChange={this.updateNombre.bind(this)} type="text" />
 						{this.state.nameRequired ? <div className="required">Este campo es requerido</div> : null}
-						<input id="lastname" placeholder="Apellido" onChange={(e) => this.updateApellido(e)} type="text" />
+						<input id="lastname" placeholder="Apellido" value={this.state.lastName} onChange={(e) => this.updateApellido(e)} type="text" />
 						{this.state.lastNameRequired ? <div className="required">Este campo es requerido</div> : null}
 						<div className="block">
-							<input type="radio" name="gender" value="hombre" checked={this.state.selectedOption === 'hombre'} onChange={(e) => this.selectRadio(e)} /> Hombre<br/>
-							<input type="radio" name="gender" value="mujer" checked={this.state.selectedOption === 'mujer'} onChange={(e) => this.selectRadio(e)} /> Mujer<br/>
+							<input type="radio" name="gender" value="Hombre" checked={this.state.selectedOption === 'Hombre'} onChange={(e) => this.selectRadio(e)} /> Hombre<br/>
+							<input type="radio" name="gender" value="Mujer" checked={this.state.selectedOption === 'Mujer'} onChange={(e) => this.selectRadio(e)} /> Mujer<br/>
 						</div>
 						<div className="block">
-							<input type="checkbox" name="interest" value="musica" onChange={(e) => this.updateCheckBox(e)} checked={this.state.isChecked} /> Música<br/>
-							<input type="checkbox" name="interest" value="tecnologia" onChange={(e) => this.updateCheckBox(e)} checked={this.state.isChecked} /> Tecnología<br/>
-							<input type="checkbox" name="interest" value="viajes" onChange={(e) => this.updateCheckBox(e)} checked={this.state.isChecked} /> Viajes<br/>
-							<input type="checkbox" name="interest" value="gastronomia" onChange={(e) => this.updateCheckBox(e)} checked={this.state.isChecked} /> Gastronomía<br/>
+							<input type="checkbox" name="checkboxMusValue" value="musica" onChange={(e) => this.updateCheckBox(e)} checked={this.state.checkboxMusValue} /> Música<br/>
+							<input type="checkbox" name="checkboxTecValue" value="tecnologia" onChange={(e) => this.updateCheckBox(e)} checked={this.state.checkboxTecValued} /> Tecnología<br/>
+							<input type="checkbox" name="checkboxViaValue" value="viajes" onChange={(e) => this.updateCheckBox(e)} checked={this.state.checkboxViaValue} /> Viajes<br/>
+							<input type="checkbox" name="checkboxGasValue" value="gastronomia" onChange={(e) => this.updateCheckBox(e)} checked={this.state.checkboxGasValue} /> Gastronomía<br/>
 						</div>
 						{this.state.isCheckedRequired ? <div className="required">Debe seleccionar al menos una opción</div> : null}
 						<button>Enviar</button>
 					</form>
 					{this.state.loading ? <div>Cargando...</div> : null}
 					{this.state.successMessage ? <div className="success-message">Su mensaje ha sido exitosamente enviado</div> : null}
-					{this.state.successMessage ? <div><small>{this.state.name + ' ' + this.state.lastName}</small></div> : null}
+					{this.state.successMessage ? <div><small>{this.state.name + ' ' + this.state.lastName + ', ' + this.state.selectedOption }</small></div> : null}
 				</div>
 			</div>
 		)
