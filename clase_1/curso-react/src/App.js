@@ -75,7 +75,6 @@ class Formulario extends Component{
 		this.formValidation();
 		if(this.state.name === '' || this.state.lastName === '' || this.state.isChecked === false){
 			return;
-		} else {
 		}
 		this.toggleLoading()
 		setTimeout(function(){
