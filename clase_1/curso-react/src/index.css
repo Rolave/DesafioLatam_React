@@ -25,7 +25,15 @@ button{
 	border: 0;
 	line-height: 40px;
 	margin: 0;
+	-moz-transition: all .2s ease;
+	-o-transition: all .2s ease;
+	-webkit-transition: all .2s ease;
+	transition: all .2s ease;
 	width: 100%;
+}
+.btn:hover, .btn:focus {
+	color: white;
+	background: #337ab7;
 }
 .block{
 	margin-bottom: 10px;
